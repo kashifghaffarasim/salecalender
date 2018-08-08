@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ShowMore from 'react-show-more';
 
 
 class Element extends Component {

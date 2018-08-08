@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import FullCalendar from 'fullcalendar-reactwrapper';
 
 
@@ -7,50 +6,54 @@ class Calender extends Component {
       constructor(props) {
           super(props);
           this.state = {
-    events:[
-                {
-                    title: 'All Day Event',
-                    start: '2017-05-01'
-                },
-                {
-                    title: 'Long Event',
-                    start: '2017-05-07',
-                    end: '2017-05-10'
-                },
-                {
-                    id: 999,
-                    title: 'Repeating Event',
-                    start: '2017-05-09T16:00:00'
-                },
-                {
-                    id: 999,
-                    title: 'Repeating Event',
-                    start: '2017-05-16T16:00:00'
-                },
-                {
-                    title: 'Conference',
-                    start: '2017-05-11',
-                    end: '2017-05-13'
-                },
-                {
-                    title: 'Meeting',
-                    start: '2017-05-12T10:30:00',
-                    end: '2017-05-12T12:30:00'
-                },
-                {
-                    title: 'Birthday Party',
-                    start: '2017-05-13T07:00:00'
-                },
-                {
-                    title: 'Click for Google',
-                    url: 'http://google.com/',
-                    start: '2017-05-28'
-                }
-            ],
-          }
+            date: "May",
+            events:[
+                        {
+                            title: 'Long Event',
+                            start: '2017-05-07',
+                        },
+                        {
+                            title: 'New Event',
+                            start: '2017-05-08',
+                        },
+                        {
+                            title: 'New Event Test',
+                            start: '2017-05-09',
+                        }
+                    ],
+                    filter: [
+                              {
+                                title: 'Long Event',
+                              },
+                              {
+                                title: 'New Event',
+                              },
+                              {
+                                 title: 'New Event Test',
+                              }
+                    ]
+          };
+          localStorage.setItem('events', JSON.stringify(this.state.events));
+          this.filter = this.filter.bind(this);
       }
 
+
+   filter(e){
+     const value = e.target.id
+     const event = JSON.parse(localStorage.getItem("events"));
+     const el = event.find((element) => {
+            return element.title === value;
+       })
+     const   events = [{title: el.title,start: el.start }]
+     this.setState({events})
+  }
+
   render() {
+
+    const event = this.state.events;
+    const filter = this.state.filter;
+    const date = this.state.date;
+
     return (
 
         <div className="row">
@@ -126,19 +129,29 @@ class Calender extends Component {
                                            <i className="fa fa-filter"></i>
                                          </button>
                                          <div className="dropdown-menu dropdown-menu-right">
-                                           <button className="dropdown-item" type="button">Action</button>
-                                           <button className="dropdown-item" type="button">Another action</button>
-                                           <button className="dropdown-item" type="button">Something else here</button>
+
+
+                                         {
+                                            filter.map(ev =>{
+                                              return (
+                                                <button className="dropdown-item"
+                                                 type="button"
+                                                  key={ev.title}
+                                                  id = {ev.title}
+                                                  onClick={this.filter} >
+                                                  {ev.title}
+                                                 </button>
+
+                                                  );
+                                                })
+                                          }
                                          </div>
                                   </div>
                               </div>
                                 <div className="select-outer">
                                       <select id="mounth">
-                                              <option value="hide"> September</option>
-                                              <option value="january" rel="icon-temperature">January</option>
-                                              <option value="february">February</option>
+                                              <option value="hide"> {date}</option>
                                      </select>
-
                                 </div>
 
                              <FullCalendar
@@ -147,11 +160,10 @@ class Calender extends Component {
                                        center: 'title',
                                        right: 'month,basicWeek,basicDay'
                                    }}
-                                   defaultDate={'2018-09-12'}
-                                   navLinks= {true} // can click day/week names to navigate views
-                                   editable= {true}
-                                   eventLimit= {true} // allow "more" link when too many events
-                                   events = {this.state.events}
+                                    defaultDate={'2017-05-07'}
+                                    navLinks= {true} // can click day/week names to navigate views
+                                    editable= {true}
+                                    events = {event}
                                />
                              </div>
                         </div>
